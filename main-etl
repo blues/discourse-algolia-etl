@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This script is used to run the Algolia ETL process.
+USAGE="Usage: $0 (all|extract|transform|load)..."
+
+# Ensure environment variables are already set
+: "${DISCOURSE_API_KEY:?}"
+: "${DISCOURSE_URL:?}"
+: "${DISCOURSE_USERNAME:?}"
+: "${ALGOLIA_API_KEY:?}"
+: "${ALGOLIA_APP_ID:?}"
+: "${ALGOLIA_INDEX_NAME:?}"
+# Set some defaults which can be overriden by the user
+: "${DISCOURSE_DATA_FILE:=discourse.json}"
+: "${ALGOLIA_DATA_FILE:=algolia.json}"
+: "${ALGOLIA_LVL0:=Forum}"
+: "${ALGOLIA_TAG:=community}"
+
+cd "$(dirname "$0")"
+
+EXTRACT=false
+TRANSFORM=false
+LOAD=false
+
+# Process cmd line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        all)
+            EXTRACT=true
+            TRANSFORM=true
+            LOAD=true
+            ;;
+        extract)
+            EXTRACT=true
+            ;;
+        transform)
+            TRANSFORM=true
+            ;;
+        load)
+            LOAD=true
+            ;;
+        *)
+            echo "$USAGE"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ $EXTRACT == false && $TRANSFORM == false && $LOAD == false ]]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+if [[ $EXTRACT == true ]]; then
+    echo "Extracting data from Discourse..."
+    time src/extract_discourse.py > "$DISCOURSE_DATA_FILE"
+fi
+
+if [[ $TRANSFORM == true ]]; then
+    echo "Transforming data..."
+    time src/transform_discourse_to_algolia.py \
+        --discourse-url="$DISCOURSE_URL" \
+        --lvl0="$ALGOLIA_LVL0" \
+        --tag="$ALGOLIA_TAG" \
+        < "$DISCOURSE_DATA_FILE" \
+        > "$ALGOLIA_DATA_FILE"
+fi
+
+if [[ $LOAD == true ]]; then
+    echo "Loading data into Algolia..."
+    time src/load_algolia.py "$ALGOLIA_DATA_FILE" "$ALGOLIA_INDEX_NAME"
+fi
+
+echo "Done!"

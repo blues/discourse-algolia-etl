@@ -1,0 +1,4 @@
+.env*
+algolia.json*
+discourse.json*
+__pycache__/

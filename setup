@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pip3 install \
+    algoliasearch \
+    bs4 \
+    docopt \
+    fluent-discourse \
+
+chmod +x \
+    main-etl \
+    src/extract_discourse.py \
+    src/transform_discourse_to_algolia.py \
+    src/load_algolia.py \
