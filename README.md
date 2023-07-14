@@ -24,7 +24,8 @@ very useful tool for scraping static sites.
 
 ### Python
 
-This tool was developed with python 3.9.
+This tool was developed with python 3.9 or later. It may work with earlier
+versions of python 3 but it has not been tested.
 
 ## Configuration
 
@@ -118,7 +119,7 @@ file contains the json that will be sent to Algolia.
 ### Python
 
 If you use the vscode devcontainer, you'll get a python environment with the
-correct version of python. Otherwise, you'll want to install python 3.9.\*.
+correct version of python. Otherwise, you'll want to install python 3.9+.
 
 ### Setup
 
@@ -128,18 +129,15 @@ correct version of python. Otherwise, you'll want to install python 3.9.\*.
 
 ### Testing
 
-The tests were written with the python unittest framework. There are two ways to
-run the tests.
-
-The easiest is to install the vscode extension `Python Test Explorer UI` and run
-the tests from there.
-
-The other way is to run the tests from the command line:
+The tests were written with the python `unittest` framework. The easiest way to
+run them is from the command line.
 
 ```bash
 ./setup # install dependencies
 python3 -m unittest discover
 ```
+
+It's also possible to use the VSCode Test Explorer to run the tests.
 
 #### Tip
 
