@@ -1,0 +1,4 @@
+algoliasearch==3.0.0
+bs4==0.0.2
+docopt==0.6.2
+fluent-discourse==1.0.1
