@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-pip3 install \
-    algoliasearch \
-    bs4 \
-    docopt \
-    fluent-discourse \
+pip3 install -r requirements.txt
 
 chmod +x \
     main-etl \
